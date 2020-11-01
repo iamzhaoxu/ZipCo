@@ -1,0 +1,135 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>ZipCo.Users.WebApi</name>
+    </assembly>
+    <members>
+        <member name="T:ZipCo.Users.WebApi.Controllers.AccountController">
+            <summary>
+            Endpoint for query and modify account resource 
+            </summary>
+        </member>
+        <member name="M:ZipCo.Users.WebApi.Controllers.AccountController.SignUp(ZipCo.Users.WebApi.Requests.SignUpAccountRequest)">
+            <summary>
+            Sign up an account for a member via member Id
+            </summary>
+            <param name="request"></param>
+            <returns>The new account</returns>
+            <response code="200">Returns the new account</response>
+            <response code="400">MemberId is not valid</response>
+        </member>
+        <member name="M:ZipCo.Users.WebApi.Controllers.AccountController.List(ZipCo.Users.WebApi.Requests.ListAccountsRequest)">
+            <summary>
+            List accounts by some search conditions
+            </summary>
+            <returns>A list of accounts</returns>
+            <response code="200">Returns a list of accounts</response>
+        </member>
+        <member name="T:ZipCo.Users.WebApi.Controllers.ApiBaseController`1">
+            <inheritdoc />
+        </member>
+        <member name="T:ZipCo.Users.WebApi.Controllers.MemberController">
+            <summary>
+            Endpoint for query and modify account resource 
+            </summary>
+        </member>
+        <member name="M:ZipCo.Users.WebApi.Controllers.MemberController.SignUp(ZipCo.Users.WebApi.Requests.SignUpMemberRequest)">
+            <summary>
+            Sign up an account for a member via member Id
+            </summary>
+            <param name="request"></param>
+            <returns>The new account</returns>
+            <response code="200">Create the new account item successfully</response>
+            <response code="400">MemberId is invalid</response>
+        </member>
+        <member name="M:ZipCo.Users.WebApi.Controllers.MemberController.GetMemberByEmail(System.String)">
+            <summary>
+            Get member details via member email address
+            </summary>
+            <param name="email">Email address</param>
+            <returns>A member item</returns>
+            <response code="200">Returns the member item successfully</response>
+            <response code="400">Member email is invalid</response>
+            <response code="404">Member is not found from email</response>
+        </member>
+        <member name="M:ZipCo.Users.WebApi.Controllers.MemberController.List(ZipCo.Users.WebApi.Requests.ListMemberRequest)">
+            <summary>
+            List members by some search conditions
+            </summary>
+            <returns>A list of members</returns>
+            <response code="200">Returns a list of members</response>
+        </member>
+        <member name="P:ZipCo.Users.WebApi.Models.AccountModel.Id">
+            <summary>
+            Account Id
+            </summary>
+        </member>
+        <member name="P:ZipCo.Users.WebApi.Models.AccountModel.AccountNumber">
+            <summary>
+            Account string identifier. Start with prefix ZIP then follow with digital number
+            </summary>
+        </member>
+        <member name="P:ZipCo.Users.WebApi.Models.AccountModel.AccountStatus">
+            <summary>
+            Account status. Either Active or Closed
+            </summary>
+        </member>
+        <member name="P:ZipCo.Users.WebApi.Models.AccountModel.AvailableBalance">
+            <summary>
+            Available fund
+            </summary>
+        </member>
+        <member name="P:ZipCo.Users.WebApi.Models.AccountModel.AccountBalance">
+            <summary>
+            The current account balance, excluding pending balance
+            </summary>
+        </member>
+        <member name="P:ZipCo.Users.WebApi.Models.AccountModel.PendingBalance">
+            <summary>
+            The fund which is still pending for settlement
+            </summary>
+        </member>
+        <member name="P:ZipCo.Users.WebApi.Requests.ApiPaginationRequest.PageSize">
+            <summary>
+            The number of account items displayed in one page
+            </summary>
+        </member>
+        <member name="P:ZipCo.Users.WebApi.Requests.ApiPaginationRequest.PageNumber">
+            <summary>
+            Page number for display accounts
+            </summary>
+        </member>
+        <member name="P:ZipCo.Users.WebApi.Requests.ListMemberRequest.MemberName">
+            <summary>
+            (Optional) List accounts by member name.
+            </summary>
+        </member>
+        <member name="P:ZipCo.Users.WebApi.Requests.ListAccountsRequest.AccountStatus">
+            <summary>
+            (Optional) List accounts by account status field
+            Status can be 'active' or 'closed' 
+            </summary>
+        </member>
+        <member name="P:ZipCo.Users.WebApi.Requests.ListAccountsRequest.AccountNumber">
+            <summary>
+            (Optional) List accounts by account number field
+            Account number is started with 'ZIP'
+            </summary>
+        </member>
+        <member name="P:ZipCo.Users.WebApi.Requests.SignUpAccountRequest.MemberId">
+            <summary>
+            When sign up an account for the member, a member id is required
+            </summary>
+        </member>
+        <member name="P:ZipCo.Users.WebApi.Responses.ApiPaginationResponse`1.TotalPageNumber">
+            <summary>
+            Total page number for the current list query
+            </summary>
+        </member>
+        <member name="P:ZipCo.Users.WebApi.Responses.ApiSimpleResponse`1.Data">
+            <summary>
+            Response data
+            </summary>
+        </member>
+    </members>
+</doc>

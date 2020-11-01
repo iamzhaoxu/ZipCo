@@ -1,0 +1,43 @@
+version: "3.8"
+services:
+
+  userapi:
+    build: 
+      context: .
+      dockerfile: Api.Dockerfile
+    ports:
+      - "8000:80"
+      - "8001:443"
+    depends_on:
+      - updatedb
+    environment:
+       AspnetCore_Environment: "development"
+       ConnectionStrings__UserDbConnection: "server=mssql;database=payco.user;user id=sa;password=yourStrong(!)Password;"
+    restart: unless-stopped
+    command: sleep 10
+    entrypoint: /bin/bash host-user-api.sh
+  
+  updatedb:
+    build: 
+      context: .
+      dockerfile: DbUpdate.Dockerfile
+    environment:
+       UserContextMigrationDbConnecitonString: "Server=mssql;Database=PayCo.User;User Id=sa;Password=yourStrong(!)Password;"
+    depends_on:
+      - mssql
+    restart: on-failure:10
+    command: sleep 10
+    entrypoint: /bin/bash update-db.sh
+
+  mssql:
+    image: mcr.microsoft.com/mssql/server:2017-CU8-ubuntu
+    ports:
+      - "1433:1433"
+    environment:
+      ACCEPT_EULA: Y
+      SA_PASSWORD: "yourStrong(!)Password"
+      
+
+    
+
+  
