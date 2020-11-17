@@ -12,9 +12,25 @@ namespace ZipCo.Users.Test.Unit.Infrastructure.Persistence.Extensions
 {
     public class QueryExtensionTests
     {
+        [Fact]
+        public async Task GivenQueryExtension_WhenCallListByPaging_IfDataSetIsEmpty_ShouldReturnEmptyPaginationResponse()
+        {
+            using (var context = await InMemoryDbContextFactory.CreateUserContext())
+            {
+                // act
+                var result = await context.AccountSignUpStrategies
+                    .OrderBy(a => a.Id)
+                    .ListByPaging(1, 1);
+
+                // assert
+                result.TotalPageNumber.ShouldBe(0);
+                result.Data.Count().ShouldBe(0);
+            }
+        }
+
         [Theory]
         [MemberData(nameof(GetListByPagingQueryTestData))]
-        public async Task GivenQueryExtension_WhenCallListByPaging_ShouldReturnPaginationResponse(
+        public async Task GivenQueryExtension_WhenCallListByPaging_IfDataSetIsNotEmpty_ShouldReturnPaginationResponse(
             int pageSize, int pageNumber, int totalPageNumber, string[] expectedResult)
         {
             using (var context = await InMemoryDbContextFactory.CreateUserContext())
@@ -65,7 +81,7 @@ namespace ZipCo.Users.Test.Unit.Infrastructure.Persistence.Extensions
             yield return new object[] { 2, 1, 3, new []{ "One", "Two" } };
             yield return new object[] { 2, 2, 3, new[] { "Three", "Four" } };
             yield return new object[] { 2, 3, 3, new[] { "Five" } };
-            yield return new object[] { 2, 4, 3, new string[] {} };
+            yield return new object[] { 2, 4, 3, new [] { "Five" } };
             yield return new object[] { 2, -1, 3, new[] { "One", "Two" } };
             yield return new object[] { 5, 1, 1, new[] { "One", "Two", "Three", "Four", "Five" } };
             yield return new object[] { 100, 1, 1, new[] { "One", "Two", "Three", "Four", "Five" } };

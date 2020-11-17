@@ -29,9 +29,9 @@ namespace ZipCo.Users.Test.Integration
         }
 
 
-        [Fact(Skip = "Hack Rank Not Supported")]
+        //[Fact(Skip = "Hack Rank Not Supported")]
         [Trait("Category", "Integration")]
-        //[Fact]
+        [Fact]
         public async Task GivenMemberController_WhenSignUpAMember_ShouldReturnMember()
         {
             using (var client = _factory.CreateClient())
@@ -51,9 +51,9 @@ namespace ZipCo.Users.Test.Integration
             }
         }
 
-        [Fact(Skip = "Hack Rank Not Supported")]
+        //[Fact(Skip = "Hack Rank Not Supported")]
         [Trait("Category", "Integration")]
-        //[Fact]
+        [Fact]
         public async Task GivenMemberController_WhenListMembers_ShouldReturnMembers()
         {
             using (var client = _factory.CreateClient())
@@ -81,9 +81,9 @@ namespace ZipCo.Users.Test.Integration
             }
         }
 
-        [Fact(Skip = "Hack Rank Not Supported")]
+        //[Fact(Skip = "Hack Rank Not Supported")]
         [Trait("Category", "Integration")]
-        //[Fact]
+        [Fact]
         public async Task GivenMemberController_WhenGetMemberByEmail_ShouldReturnMember()
         {
             using (var client = _factory.CreateClient())

@@ -9,9 +9,13 @@ namespace ZipCo.Users.Application.Validators
         {
             return builder.IsRequired(ValidationTokens.Pagination)
                 .Must(p => p.PageSize > 0)
-                .WithMessage(ValidationTokens.InvalidPageSize)
+                .WithMessage(ValidationTokens.PageSizeTooSmall)
                 .Must(p => p.PageNumber > 0)
-                .WithMessage(ValidationTokens.InvalidPageNumber);
+                .WithMessage(ValidationTokens.PageNumberTooSmall)
+                .Must(p => p.PageSize < 1000)
+                .WithMessage(p => ValidationTokens.PageSizeTooLarge)
+                .Must(p => p.PageNumber < 10000)
+                .WithMessage(p => ValidationTokens.PageNumberTooLarge);
         }
 
         public static IRuleBuilderOptions<T, TProperty> IsRequired<T, TProperty>(this IRuleBuilderInitial<T, TProperty> builder, string name)

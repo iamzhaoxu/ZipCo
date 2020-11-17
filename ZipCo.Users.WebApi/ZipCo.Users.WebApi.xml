@@ -91,12 +91,12 @@
         </member>
         <member name="P:ZipCo.Users.WebApi.Requests.ApiPaginationRequest.PageSize">
             <summary>
-            The number of account items displayed in one page
+            The number of items displayed in one page.
             </summary>
         </member>
         <member name="P:ZipCo.Users.WebApi.Requests.ApiPaginationRequest.PageNumber">
             <summary>
-            Page number for display accounts
+            Page number for display items.
             </summary>
         </member>
         <member name="P:ZipCo.Users.WebApi.Requests.ListMemberRequest.MemberName">

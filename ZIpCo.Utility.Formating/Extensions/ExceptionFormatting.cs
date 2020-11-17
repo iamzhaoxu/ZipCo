@@ -11,6 +11,7 @@ namespace ZIpCo.Utility.Formatting.Extensions
             {
                 return aggregateException.Flatten().InnerExceptions;
             }
+
             return new[] {ex};
         }
     }

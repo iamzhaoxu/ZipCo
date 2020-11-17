@@ -18,9 +18,9 @@ namespace ZipCo.Users.Test.Integration
             _factory = factory;
         }
 
-        [Fact(Skip = "Hack Rank Not Supported")]
+        //[Fact(Skip = "Hack Rank Not Supported")]
         [Trait("Category", "Integration")]
-        //[Fact]
+        [Fact]
         public async Task GivenAccountController_WhenSignUpAccount_ShouldReturnAccount()
         {
             using (var client = _factory.CreateClient())
@@ -43,9 +43,9 @@ namespace ZipCo.Users.Test.Integration
             }
         }
 
-        [Fact(Skip = "Hack Rank Not Supported")]
+        //[Fact(Skip = "Hack Rank Not Supported")]
         [Trait("Category", "Integration")]
-        //[Fact]
+        [Fact]
         public async Task GivenAccountController_WhenListAccount_ShouldReturnAccounts()
         {
             using (var client = _factory.CreateClient())

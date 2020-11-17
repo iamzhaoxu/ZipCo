@@ -17,8 +17,10 @@ namespace ZipCo.Users.Test.Unit.Core.Application.Validators.Members
         }
 
         [Theory]
-        [InlineData(-1, 1, ValidationTokens.InvalidPageNumber)]
-        [InlineData(1, -1, ValidationTokens.InvalidPageSize)]
+        [InlineData(-1, 1, ValidationTokens.PageNumberTooSmall)]
+        [InlineData(1, -1, ValidationTokens.PageSizeTooSmall)]
+        [InlineData(10000, 1, ValidationTokens.PageNumberTooLarge)]
+        [InlineData(1, 1000, ValidationTokens.PageSizeTooLarge)]
         public void GivenListMembersValidator_WhenCallValidate_IfPaginationInvalid_ShouldFail(int pageNumber,
             int pageSize, string expectedResult)
         {
@@ -50,8 +52,8 @@ namespace ZipCo.Users.Test.Unit.Core.Application.Validators.Members
                 MemberName = null,
                 Pagination = new PaginationRequest
                 {
-                    PageSize = 1,
-                    PageNumber = 1
+                    PageSize = 999,
+                    PageNumber = 9999
                 }
             };
 

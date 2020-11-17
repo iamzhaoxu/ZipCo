@@ -4,12 +4,12 @@
     {
 
         /// <summary>
-        /// The number of account items displayed in one page
+        /// The number of items displayed in one page.
         /// </summary>
         public int PageSize { get; set; } = 5;
 
         /// <summary>
-        /// Page number for display accounts
+        /// Page number for display items.
         /// </summary>
         public int PageNumber { get; set; } = 1;
     }

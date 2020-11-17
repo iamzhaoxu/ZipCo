@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
@@ -20,6 +21,18 @@ namespace ZipCo.Users.Infrastructure.Persistence.Extensions
             pageSize = Math.Max(1, pageSize);
             var allResult = await queryable.CountAsync();
             var totalPageNumber = (int)Math.Ceiling((double)allResult / pageSize);
+            if (totalPageNumber == 0)
+            {
+                return new PaginationResponse<T>
+                {
+                    TotalPageNumber = totalPageNumber,
+                    Data = new List<T>()
+                };
+            }
+            if (totalPageNumber < page)
+            {
+                page = totalPageNumber;
+            }
             var skip = (page - 1) * pageSize;
             var result = await queryable.Skip(skip).Take(pageSize).ToListAsync();
             return new PaginationResponse<T>

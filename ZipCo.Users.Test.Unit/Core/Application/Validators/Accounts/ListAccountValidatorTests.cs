@@ -17,8 +17,8 @@ namespace ZipCo.Users.Test.Unit.Core.Application.Validators.Accounts
         }
 
         [Theory]
-        [InlineData(-1, 1, ValidationTokens.InvalidPageNumber)]
-        [InlineData(1, -1, ValidationTokens.InvalidPageSize)]
+        [InlineData(-1, 1, ValidationTokens.PageNumberTooSmall)]
+        [InlineData(1, -1, ValidationTokens.PageSizeTooSmall)]
         public void GivenListAccountsValidator_WhenCallValidate_IfPaginationInvalid_ShouldFail(int pageNumber,
             int pageSize, string expectedResult)
         {
@@ -62,6 +62,58 @@ namespace ZipCo.Users.Test.Unit.Core.Application.Validators.Accounts
 
             // assert
             result.ShouldNotHaveValidationErrorFor(c => c.Pagination);
+        }
+
+        [Theory]
+        [InlineData("no1233111")]
+        [InlineData("ZIP")]
+        [InlineData("ZIPsads1231231123")]
+        [InlineData("ZIP1231231123s")]
+        [InlineData(" ")]
+        public void GivenListAccountsValidator_WhenCallValidate_IfAccountNumberProvided_AndAccountNumberIsInvalid_ShouldFail(string accountNumber)
+        {
+            // assign
+            var query = new ListAccountsQuery
+            {
+                AccountNumber = accountNumber,
+                AccountStatusId = null,
+                Pagination = new PaginationRequest
+                {
+                    PageSize = 1,
+                    PageNumber = 1
+                }
+            };
+
+            // act
+            var result = _validator.TestValidate(query);
+
+            // assert
+            result.ShouldHaveValidationErrorFor(c => c.AccountNumber)
+                .WithErrorMessage(ValidationTokens.InvalidAccountNumber); 
+        }
+
+        [Theory]
+        [InlineData("zip1233111")]
+        [InlineData("ZIP001231231")]
+        public void GivenListAccountsValidator_WhenCallValidate_IfAccountNumberProvided_AndAccountNumberIsValid_ShouldSuccess(string accountNumber)
+        {
+            // assign
+            var query = new ListAccountsQuery
+            {
+                AccountNumber = accountNumber,
+                AccountStatusId = null,
+                Pagination = new PaginationRequest
+                {
+                    PageSize = 1,
+                    PageNumber = 1
+                }
+            };
+
+            // act
+            var result = _validator.TestValidate(query);
+
+            // assert
+            result.ShouldNotHaveValidationErrorFor(c => c.AccountNumber);
         }
     }
 }

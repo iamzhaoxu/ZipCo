@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
@@ -48,11 +49,41 @@ namespace ZipCo.Users.Infrastructure.Bootstrap.ErrorHandling
 
         private async Task HandleException(HttpStatusCode statusCode, HttpContext context, Exception ex)
         {
-            foreach (var exception in ex.FlatException())
+            var flatExceptions = ex.FlatException().ToArray();
+            var hasBusinessException = await ResolveBusinessException(context, flatExceptions);
+            if (hasBusinessException)
+            {
+                return;
+            }
+            foreach (var exception in flatExceptions)
             {
                 _logger.LogCritical(exception, exception.Message);
             }
             await SendFailedResponse("Unhandled Exception", statusCode, context);
+        }
+
+        private async Task<bool> ResolveBusinessException(HttpContext context, Exception[] exceptions)
+        {
+            var maxDepth = 10;
+            var depth = 1;
+            while (exceptions.Length > 0 && depth <= maxDepth)
+            {
+                var businessException = exceptions
+                    .OfType<BusinessException>()
+                    .FirstOrDefault();
+                if (businessException != null)
+                {
+                    await HandleBusinessException(context, businessException);
+                    return true;
+                }
+
+                exceptions = exceptions.Where(e => e.InnerException != null)
+                    .Select(e => e.InnerException)
+                    .ToArray();
+                depth++;
+            }
+
+            return false;
         }
 
         private void LogByHttpStatusCode(BusinessException ex, HttpStatusCode statusCode)

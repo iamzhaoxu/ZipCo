@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DocumentationFile>C:\Source\a7e0043f-5e14-4afd-b288-7ebfcbb5f893\ZipCo.Users.WebApi\ZipCo.Users.WebApi.xml</DocumentationFile>
+    <DocumentationFile>C:\Source\ZipCo\ZipCo.Users.WebApi\ZipCo.Users.WebApi.xml</DocumentationFile>
     <NoWarn>1701;1702;1591</NoWarn>
   </PropertyGroup>
 
@@ -27,7 +27,7 @@
 
   <ItemGroup>
     <None Update="ZipCo.Users.WebApi.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
 </Project>

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
@@ -18,6 +19,7 @@ namespace ZipCo.Users.Test.Unit.Infrastructure.Bootstrap.ErrorHandling
         private readonly RequestDelegate _requestDelegate;
         private readonly MockLogger<GlobalExceptionHandler> _logger;
         private readonly IHttpResponseHelper _httpResponseHelper;
+        private const string UnhandledErrorMessage = "Unhandled Exception";
         public GlobalExceptionHandlerTests()
         {
             _logger = Substitute.For<MockLogger<GlobalExceptionHandler>>();
@@ -38,8 +40,92 @@ namespace ZipCo.Users.Test.Unit.Infrastructure.Bootstrap.ErrorHandling
             await _handler.Invoke(context);
 
             // assert
-            AssertLogging(LogLevel.Critical, ex.Message, ex); 
-            await AssertHttpResponse(context, HttpStatusCode.InternalServerError, "Unhandled Exception");
+            AssertLogging(LogLevel.Critical, ex.Message, ex);
+            await AssertHttpResponse(context, HttpStatusCode.InternalServerError, UnhandledErrorMessage);
+        }
+
+        [Fact]
+        public async Task GivenGlobalExceptionHandler_WhenExceptionRaised_IfInnerExceptionIsGeneralException_SendInternalServerError()
+        {
+            // assign
+            var context = new DefaultHttpContext();
+            var ex = new Exception("Some Exception", new Exception("Some Inner Exception"));
+            _requestDelegate.Invoke(Arg.Any<HttpContext>()).Returns(callInfo => throw ex);
+
+            // act
+            await _handler.Invoke(context);
+
+            // assert
+            AssertLogging(LogLevel.Critical, ex.Message, ex);
+            await AssertHttpResponse(context, HttpStatusCode.InternalServerError, UnhandledErrorMessage);
+        }
+
+        [Fact]
+        public async Task GivenGlobalExceptionHandler_WhenExceptionRaised_IfInnerExceptionIsBadRequestBusinessException_ShouldSendBadRequest()
+        {
+            // assign
+            var context = new DefaultHttpContext();
+            var businessException = new BusinessException("Some Bad Request",
+                BusinessErrors.BadRequest("Bad Request"));
+            var ex = new Exception("Some Exception", businessException);
+            _requestDelegate.Invoke(Arg.Any<HttpContext>()).Returns(callInfo => throw ex);
+
+            // act
+            await _handler.Invoke(context);
+
+            // assert
+            AssertLogging(LogLevel.Warning, businessException.Message, null); 
+            await AssertHttpResponse(context, HttpStatusCode.BadRequest,
+                businessException.BusinessErrorMessage);
+        }
+
+        [Fact]
+        public async Task GivenGlobalExceptionHandler_WhenExceptionRaised_IfExceptionIsAggregateException_ShouldSendInternalServerError()
+        {
+            // assign
+            var context = new DefaultHttpContext();
+            var innerExceptions = new List<Exception>
+            {
+                new Exception("Inner Exception 1"),
+                new Exception("Inner Exception 2")
+            };
+            var ex = new AggregateException(innerExceptions);
+            _requestDelegate.Invoke(Arg.Any<HttpContext>()).Returns(callInfo => throw ex);
+
+            // act
+            await _handler.Invoke(context);
+
+            // assert
+            foreach (var innerException in innerExceptions)
+            {
+                AssertLogging(LogLevel.Critical, innerException.Message, innerException);
+            }
+            await AssertHttpResponse(context, HttpStatusCode.InternalServerError, UnhandledErrorMessage);
+        }
+
+        [Fact]
+        public async Task GivenGlobalExceptionHandler_WhenExceptionRaised_IfExceptionIsAggregateException_AndOneOfInnerExceptionIsBadRequestBusinessException_ShouldSendBadRequest()
+        {
+            // assign
+            var context = new DefaultHttpContext();
+            var businessException = new BusinessException("Some Bad Request",
+                BusinessErrors.BadRequest("Bad Request"));
+            var otherException = new Exception("Inner Exception 1");
+            var innerExceptions = new List<Exception>
+            {
+                otherException,
+                businessException
+            };
+            var ex = new AggregateException(innerExceptions);
+            _requestDelegate.Invoke(Arg.Any<HttpContext>()).Returns(callInfo => throw ex);
+
+            // act
+            await _handler.Invoke(context);
+
+            // assert
+            AssertLogging(LogLevel.Warning, businessException.Message, null);
+            await AssertHttpResponse(context, HttpStatusCode.BadRequest, 
+                businessException.BusinessErrorMessage);
         }
 
         [Fact]
